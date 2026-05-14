@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-
+environment: production
 permissions:
   id-token: write # Required for OIDC
   contents: read  # Required to checkout code
@@ -18,7 +18,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials https://github.com/aws-actions/configure-aws-credentials)@v4
         with:
-          role-to-assume:arn:aws:iam::aws:policy/AmazonS3FullAccess # Replace with your Role ARN
+          role-to-assume:arn:aws:iam::617163942837:role/PUUSHTOS3BUCKET:aws:iam::aws:policy/AmazonS3FullAccess # Replace with your Role ARN
           aws-region: us-east-1 # Replace with your bucket's region
 
       - name: sync  S3
