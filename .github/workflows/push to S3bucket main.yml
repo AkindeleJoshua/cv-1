@@ -1,0 +1,25 @@
+name: Push to S3 bucket11
+on:
+  push:
+    branches:
+      - main
+environment: production
+permissions:
+  id-token: write # Required for OIDC
+  contents: read  # Required to checkout code
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: [aws-actions/configure-aws-credentials https://github.com/aws-actions/configure-aws-credentials)@v4
+        with:
+          role-to-assume: arn:aws:iam::617163942837:role/PUUSHTOS3BUCKET # Replace with your Role ARN
+          aws-region: us-east-1 # Replace with your bucket's region
+
+      - name: Sync to S3
+        run:  aws s3 sync ./dist s3://mygithubworkflowdemo --delete # Sync local folder to bucket
