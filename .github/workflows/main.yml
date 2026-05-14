@@ -8,26 +8,51 @@ on:
   push:
     path:
       - 'index.html'
+      - '**.css'
+      - '**.js'
+      - 'assets/**'
+      - 'images/**'
+      - '**.png'
+      - '**.jpg'
+      - '**.svg'
+      - '**.ico'
     branches:
       - main
+    #control on what this workflow is allowed to do
+    workflow_dispatch:
+      
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 # A workflow deploy is made up of one or more jobs that can deploy sequentially or in parallel
 jobs:
   # This workflow contains a single job called "Deploy"
   deploy:
+  #link this jobs to github environment name " github-pages
+    environment:
+    name: github-pages
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Get the code
+      - name: checkout repository
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
       # Runs a single command using the runners shell
-      - name: Publish to Github pages
-        uses: peaceiris/action-gh-pages@v3
+      - name: setup pages
+        uses: action/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secret.GITHUB_TOKEN }}
-          publish_dir: ./
-          publish_branch: gh-pages
+          path: '.'
+          
+      - name: Deploy to GitHub Pages 
+        id: deployment
+        uses: actions/deploy-pages@v4
